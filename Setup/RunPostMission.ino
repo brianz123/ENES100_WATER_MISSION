@@ -5,7 +5,7 @@ void postMission() {
       moveTo(1, 2);
       moveTo(2, 2);
       if (checkObstacle()) { //if cannot see in 4,2
-        moveTo(2, 1)
+        moveTo(2, 1);
         if (checkObstacle()) { //if cannot see in 4,1
           moveTo(2, 0);
           moveTo(4, 0);
@@ -69,7 +69,7 @@ void postMission() {
     returns true if there is no obsticale present
   ***/
   bool checkObstacle() {
-    if (getDist() > Ultrasonicthreshold) {
+    if (getDist() > ultrasonicThreshold) {
       return true;
     }
     return false;

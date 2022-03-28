@@ -3,7 +3,7 @@
 // #include <FastLED>
 
 #define marker 210
-#define pi = 3.14159265359
+#define pi 3.14159265359
 //Pin assignment////////////////////////
 //Left Motors (A)
 #define motorPin1 0
@@ -29,7 +29,7 @@
 #define Atrim 0
 //constants////////////////////////////
 const int grid[5][3];
-const double Ultrasonicthreshold 50 //threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
+#define ultrasonicThreshold 50 //threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
 const int SalinityThreshold = 250; //update
 const int photoresistorThreshhold = 50; //update
 const int relayTimeOn = 10000; //milliseconds
@@ -100,7 +100,7 @@ void move(double time, int velocity, bool forward = true) {
 * stops drive motors
 ***/
 void stopMotion() {
-  motors.disable();
+  motors.stop();
 }
 /***
 * turns OTV
@@ -116,7 +116,7 @@ void turn(double angle, int velocity, bool left =true) {
   motors.setSpeedA(velocity - Atrim);
   motors.setSpeedB(velocity - Btrim);
   do {
-    update();
+    updateCoords();
   } while (abs(theta - angle) > turnThreshold);
   stopMotion();
 }
@@ -125,20 +125,20 @@ void turn(double angle, int velocity, bool left =true) {
     moves OTV to desired coordinate
   ***/
   void moveTo(double newX, double newY) {
-    int deviationFromX = x - startX;
 double deviationFromTheta = 0;
-double newTheta = theta;
 updateCoords();
+double newTheta = theta;
+
 double slope;
 do {
   updateCoords();
-  slope = (newy-y)/(newX-x)z);
+  slope = (newX-y)/(newX-x);
   deviationFromTheta = atan(slope);
-  if (deviationFromX < 0) { //need to turn left
-    newTheta += deviationFromTheta;
+  if (deviationFromTheta-theta > 0) { //need to turn left
+    newTheta = deviationFromTheta;
     turn(newTheta, 150);
-  } else if (deviationFromX > 0) {//need to turn right
-    newTheta -= deviationFromTheta;
+  } else if (deviationFromTheta-theta < 0) {//need to turn right
+    newTheta = deviationFromTheta;
     turn(newTheta, 150, false);
   }
 } while (abs(newY - y) > missionDistanceThreshold && abs(newX - x) > missionDistanceThreshold);

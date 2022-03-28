@@ -50,13 +50,13 @@ void updateCoords() {
 void runMission(){
     int waterLevel;
     String watertype[] =  {"FRESH_UNPOLLUTED","FRESH_POLLUTED", "SALT_UNPOLLUTED", "SALT_POLLUTED"};
-    String typeOfWater;
+    char typeOfWater[];
     //TODO read water level
     analogWrite(relayPin, 255);
     delay(relayTimeOn);
     analogWrite(relayPin, 0);
     //TODO determine Pollution
 
-    Enes100.mission(WATER_DEPTH, waterLevel);
-    Enes100.mission(WATER_TYPE, typeOfWater)
+    Enes100.mission(1, waterLevel);
+    Enes100.mission(1, typeOfWater);
 }
