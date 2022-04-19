@@ -3,60 +3,95 @@
 /***
   completes water collection
 ***/
-void completeMission(){
+void completeMission() {
+  Enes100.println("Mission Start");
   updateCoords();
   double missionY = 1.45;
   double startX = .55;
   double directionTheta = pi / 2; //direction to point
   if (y > 1) {
     directionTheta = -1 * pi / 2;
+    setAngle(directionTheta);
     missionY = .55;
+    Enes100.println("more than 1");
+    setAngle(directionTheta);
+    moveToMission(.55, .75);
+    setAngle(directionTheta);
+    moveToMission(.55, .75);
+    setAngle(directionTheta);
+  } else {
+    Enes100.println("less than 1");
+    setAngle(directionTheta);
+    //    moveTo(.55, 1);
+    setAngle(directionTheta);
+    moveToMission(.55, 1.15);
+    setAngle(directionTheta);
+    moveToMission(.55, 1.15);
+    setAngle(directionTheta);
   }
-  turn(directionTheta, 150);
+  Enes100.println("At Mission sight");
 
-updateCoords();
-int deviationFromX = x - startX;
-double deviationFromTheta = 0;
-double newTheta = directionTheta;
-do {
+  //updateCoords();
+  //double deviationFromX = x - startX;
+  //double deviationFromTheta = 0;
+  //double newTheta = directionTheta;
+  //do {
+  //  newTheta = theta;
+  //  updateCoords();
+  //  double yDist = abs(missionY - y);
+  //  deviationFromX = x - startX;
+  //  deviationFromTheta = atan(yDist / abs(deviationFromX));
+  //  if (deviationFromX > 0) { //need to turn left
+  //    newTheta += deviationFromTheta;
+  //    turnInPlace(newTheta, 255, true);
+  //      Enes100.println("Turn Left");
+  //
+  //  } else if (deviationFromX > 0) {
+  //    newTheta -= deviationFromTheta;
+  //    turnInPlace(newTheta, 255, false);
+  //    Enes100.println("Turn Right");
+  //  }else Enes100.println("straight");
+  //  delay(2000);
+  //MOVE(250, 255, true);
+  ////  stopMotion();
+  //  Enes100.print(theta);
+  //  Enes100.print(" ");
+  //   Enes100.print(newTheta);
+  //  Enes100.print(" ");
+  //  Enes100.println(x);
+  //  Enes100.print(" ");
+  //  Enes100.println(startX);
+  //
+  //
+  //  delay(750);
+  //} while (abs(y - missionY) > missionDistanceThreshold);
+  runMission();//completes sampling proccess
   updateCoords();
-  double yDist = abs(missionY - y);
-  deviationFromTheta = atan(yDist / abs(deviationFromX));
-  if (deviationFromX < 0) { //need to turn left
-    newTheta += deviationFromTheta;
-    turn(newTheta, 150);
-  } else if (deviationFromX > 0) {
-    newTheta -= deviationFromTheta;
-    turn(newTheta, 150, false);
-  }
-} while (abs(y - missionY) > missionDistanceThreshold);
-runMission();//completes sampling proccess
-move(2, 150, false);
-turn(0, 150);
-}
-/***
-  updateCoords coordinates
-***/
-void updateCoords() {
-  if (Enes100.updateLocation()) {
-    x = Enes100.location.x; // x Coordinate
-    y = Enes100.location.y; // y Coordinate
-    theta = Enes100.location.theta; // Theta
-  }else{
-    updateCoords();
-  }
+  setMotors(-255, -255);
+  delay(20);
+  setAngle(0);
 }
 
-void runMission(){
-    int waterLevel;
-    String watertype[] =  {"FRESH_UNPOLLUTED","FRESH_POLLUTED", "SALT_UNPOLLUTED", "SALT_POLLUTED"};
-    char typeOfWater[];
-    //TODO read water level
-    analogWrite(relayPin, 255);
-    delay(relayTimeOn);
-    analogWrite(relayPin, 0);
-    //TODO determine Pollution
+void runMission() {
+  int waterLevel;
+  String watertype[] =  {"FRESH_UNPOLLUTED", "FRESH_POLLUTED", "SALT_UNPOLLUTED", "SALT_POLLUTED"};
+  String typeOfWater = watertype[1];
+  bool isSalty = getSalinity();
+  //TODO read water level
+  analogWrite(relayPin, 255);
+  delay(relayTimeOn);
+  analogWrite(relayPin, 0);
 
-    Enes100.mission(1, waterLevel);
-    Enes100.mission(1, typeOfWater);
-}
+  //TODO determine Pollution
+  if (isSalty && isPolluted)
+    typeOfWater = waterType[3];
+  else if (!isSalty && isPolluted)
+    typeOfWater = waterType[1];
+  else if (!isSalty && !isPolluted)
+    typeOfWater = waterType[0];
+  else if (isSalty && !isPolluted)
+      typeOfWater = waterType[2];
+
+    //     Enes100.mission(1, waterLevel);
+    //     Enes100.mission(1, &typeOfWater);
+  }
