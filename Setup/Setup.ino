@@ -105,7 +105,7 @@ void setup()
   //  printStuff();
 
 //  completeMission();
-//  runMission();
+  runMission();
   //    postMission();
   Serial.println(getSalinity());
   Serial.println(" Mission complete");
