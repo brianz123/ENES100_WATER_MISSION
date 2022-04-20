@@ -38,52 +38,7 @@ void completeMission() {
 }
 
 void runMission() {
-  int waterLevel;
-  String watertype[] =  {"FRESH_UNPOLLUTED", "FRESH_POLLUTED", "SALT_UNPOLLUTED", "SALT_POLLUTED"};
-  String typeOfWater = watertype[1];
-
-  //TODO read water level
-////////  EDITTTT
-long duration;
-int dis;
-
-void setup() {
-  pinMode(2, INPUT);
-  pinMode(3, OUTPUT);
-  Serial.begin(9600);
-
-}
-void loop() {
-  digitalWrite(3, LOW);
-  delay(200);
-  // trig pin activated for 10 sec
-  digitalWrite(3, HIGH);
-  delay(1000);
-  digitalWrite(3, LOW);
-
-
-  // reads digital echo and returns sound wave travel time
-  duration =  pulseIn(2, HIGH);
-  dis = duration*0.0343/2;
-  // 20 mm is 10-2, 30 is 9-2, 40 is 8-2 
-
-  //Serial.print("Distance: ");
-  //Serial.print(dis);
-  //Serial.println(" cm");
-
-  
-  if (dis == 7) {
-    Serial.println("Water height is 20 mm");
-  }
-  else if (dis == 6) {
-    Serial.println("Water height is 30 mm");
-  }
-  else if (dis == 5) {
-    Serial.println("Water height is 40 mm");
-  }
-}
-///////
-  
+  int waterLevel  = getWaterHeight();
   analogWrite(relayPin, 255);
   delay(relayTimeOn);
   analogWrite(relayPin, 0);
@@ -91,15 +46,15 @@ void loop() {
   bool isPolluted = false; //TODO add fucntion
   //TODO determine Pollution
   if (isSalty && isPolluted)
-    typeOfWater = watertype[3];
+    Enes100.mission(WATER_TYPE, SALT_UNPOLLUTED);
   else if (!isSalty && isPolluted)
-    typeOfWater = watertype[1];
+  Enes100.mission(WATER_TYPE, FRESH_POLLUTED);
   else if (!isSalty && !isPolluted)
-    typeOfWater = watertype[0];
+  Enes100.mission(WATER_TYPE, FRESH_UNPOLLUTED);
   else if (isSalty && !isPolluted)
-    typeOfWater = watertype[2];
-  Serial.println(typeOfWater);
+  Enes100.mission(WATER_TYPE, SALT_UNPOLLUTED);
+//  Serial.println(typeOfWater);
 
-  //     Enes100.mission(1, waterLevel);
-  //     Enes100.mission(1, &typeOfWater);
+       Enes100.mission(DEPTH, waterLevel);
+       
 }

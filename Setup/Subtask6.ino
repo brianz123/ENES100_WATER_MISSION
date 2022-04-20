@@ -160,7 +160,9 @@ int getMedianNum(int bArray[], int iFilterLen)
   return bTemp;
 }
 
-//return true if salty
+/***
+ *return true if salty 
+ */
 bool getSalinity() {
   static unsigned long analogSampleTimepoint = millis();
   analogSampleTimepoint = millis();
@@ -182,7 +184,35 @@ bool getSalinity() {
     return false;
   else
     return true;
+}
 
+/***
+ * return the depth of the water in the pool
+ */
+int getWaterHeight(){
+  //TODO read water level
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // trig pin activated for 10 u sec
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // reads digital echo and returns sound wave travel time
+  duration =  pulseIn(echoPinB, HIGH);
+  distance = duration * 0.0343 / 2;
+  // 20 mm is 10-2, 30 is 9-2, 40 is 8-2
 
-  // return false;
+  if (distance == 7) {
+    //      Serial.println("Water height is 20 mm");
+    return 20;
+  }
+  else if (distance == 6) {
+    //      Serial.println("Water height is 30 mm");
+    return 30;
+  }
+  else if (distance == 5) {
+    //      Serial.println("Water height is 40 mm");
+    return 40;
+  }
 }
