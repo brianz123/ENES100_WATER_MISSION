@@ -15,19 +15,19 @@ void completeMission() {
     missionY = .55;
     Enes100.println("more than 1");
     setAngle(directionTheta);
-    moveToMission(.55, .75);
-    setAngle(directionTheta);
-    moveToMission(.55, .75);
-    setAngle(directionTheta);
+    moveTo(.55, .75);
+//    setAngle(directionTheta);
+//    moveTo(.55, .75);
+//    setAngle(directionTheta);
   } else {
     Enes100.println("less than 1");
     setAngle(directionTheta);
     //    moveTo(.55, 1);
     setAngle(directionTheta);
-    moveToMission(.55, 1.15);
+    moveTo(.55, 1.15);
     setAngle(directionTheta);
-    moveToMission(.55, 1.15);
-    setAngle(directionTheta);
+//    moveToMission(.55, 1.15);
+//    setAngle(directionTheta);
   }
   Enes100.println("At Mission sight");
 
@@ -69,28 +69,32 @@ void completeMission() {
   updateCoords();
   setMotors(-255, -255);
   delay(20);
-  setAngle(0);
+  setAngle(0); 
 }
 
 void runMission() {
   int waterLevel;
   String watertype[] =  {"FRESH_UNPOLLUTED", "FRESH_POLLUTED", "SALT_UNPOLLUTED", "SALT_POLLUTED"};
   String typeOfWater = watertype[1];
-  bool isSalty = getSalinity();
+
+
   //TODO read water level
   analogWrite(relayPin, 255);
-  delay(relayTimeOn);
+  delay(30000);
   analogWrite(relayPin, 0);
-
+  bool isSalty = getSalinity();
+    bool isPolluted = false;
   //TODO determine Pollution
   if (isSalty && isPolluted)
-    typeOfWater = waterType[3];
+    typeOfWater = watertype[3];
   else if (!isSalty && isPolluted)
-    typeOfWater = waterType[1];
+    typeOfWater = watertype[1];
   else if (!isSalty && !isPolluted)
-    typeOfWater = waterType[0];
+    typeOfWater = watertype[0];
   else if (isSalty && !isPolluted)
-      typeOfWater = waterType[2];
+      typeOfWater = watertype[2];
+
+      Serial.println(typeOfWater);
 
     //     Enes100.mission(1, waterLevel);
     //     Enes100.mission(1, &typeOfWater);

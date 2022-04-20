@@ -1,5 +1,5 @@
 #include "Enes100.h"
- #include <FastLED.h>
+#include <FastLED.h>
 #define ENES100_HELPERS
 #include "helpers.h"
 #define marker 209
@@ -17,8 +17,8 @@ const unsigned int EN_B = 10;
 //#define waterLevelPin 12
 const int rx = 12; //esp2866 module
 const int tx = 11; //esp2866 module
-#define relayPin A1
-#define TdsSensorPin A0
+const int relayPin = A1;
+const int TdsSensorPin = A5;
 const int photoresistorPin = A2;
 #define echoPin 7 // attach pin D5 Arduino to pin Echo of HC-SR04
 #define trigPin 9  // attach pin D4 Arduino to pin Trig of HC-SR04
@@ -32,14 +32,14 @@ const int photoresistorPin = A2;
 #define SCOUNT  30           // sum of sample point
 int analogBuffer[SCOUNT];    // store the analog value in the array, read from ADC
 int analogBufferTemp[SCOUNT];
-int analogBufferIndex = 0,copyIndex = 0;
-float averageVoltage = 0,tdsValue = 0,temperature = 25;
+int analogBufferIndex = 0, copyIndex = 0;
+float averageVoltage = 0, tdsValue = 0, temperature = 25;
 // constants////////////////////////////
 const int grid[5][3];
 #define ultrasonicThreshold 10          // threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
 const int SalinityThreshold = 250;      // update
 const int photoresistorThreshhold = 50; // update
-const int relayTimeOn = 9000;          // milliseconds
+const int relayTimeOn = 2000;          // milliseconds
 const int waterLevel60 = 60;
 const int waterLevel40 = 40;
 const int waterLevel20 = 20;
@@ -60,13 +60,13 @@ double x, y, theta;
 // This will run only one time.
 void setup()
 {
-    FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
- FastLED.setBrightness(255);
- for(int i = 0; i < NUM_LEDS; i++){
-  leds[i] = CRGB::Blue;
-   FastLED.show();  
-   delay(10);
- }
+  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.setBrightness(255);
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB::Blue;
+    FastLED.show();
+    delay(10);
+  }
   pinMode(EN_A, OUTPUT);
   pinMode(EN_B, OUTPUT);
   pinMode(IN1_A, OUTPUT);
@@ -105,24 +105,27 @@ void setup()
   //  printStuff();
 
 //  completeMission();
-    postMission();
+//  runMission();
+  //    postMission();
+  Serial.println(getSalinity());
+  Serial.println(" Mission complete");
   Enes100.println(" Mission complete");
 }
 
 int val = 0;
 void loop()
 {
-//  Serial.println(checkObstacle());
-//   if (!checkObstacle()) {
-//     motorsOff(0);
-//    } else {
-//     MOVE(100, 200, true);
-//    }
+  //  Serial.println(checkObstacle());
+  //   if (!checkObstacle()) {
+  //     motorsOff(0);
+  //    } else {
+  //     MOVE(100, 200, true);
+  //    }
   // celebrate();
-  //  move(1000, 255, true);
+//    move(1000, 255, true);
   // Serial.println("move");
   //  turn(120, 255, true);
-  Serial.println("turn");
+//  Serial.println("turn");
 }
 
 
