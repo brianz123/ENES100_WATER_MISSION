@@ -61,9 +61,9 @@ void setup()
   Enes100.println("Begining Mission");
   Serial.println("Begining Mission");
   updateCoords();
-  //  completeMission();
-  runMission();
-  //    postMission();
+  completeMission();
+  //  runMission();
+  postMission();
   Serial.println(getSalinity());
   Serial.println(" Mission complete");
   Enes100.println(" Mission complete");
@@ -85,8 +85,8 @@ void loop()
 }
 
 /***
- * tries to update coordnates until it does successfully
- */
+   tries to update coordnates until it does successfully
+*/
 void updateCoords()
 {
   if (Enes100.updateLocation())
@@ -107,8 +107,8 @@ void updateCoords()
   }
 }
 /***
- * Confirms that OTV is returning reasonable numbers and not garbage values
- */
+   Confirms that OTV is returning reasonable numbers and not garbage values
+*/
 bool sanityCheck() {
   return Enes100.location.theta < PI * 1.1 &&
          Enes100.location.theta > -PI * 1.1 &&
