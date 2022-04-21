@@ -216,3 +216,15 @@ int getWaterHeight(){
     return 40;
   }
 }
+bool hasPollution(){
+  // read the value from the sensor
+  sensorValue = analogRead(photoResitor);
+  // print the sensor reading so you know its range
+  Serial.println(sensorValue);
+  // check the pollution
+  if (sensorValue > 120) {
+    return false;
+  }else{
+    return true;
+  }
+}
