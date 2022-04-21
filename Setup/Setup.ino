@@ -12,16 +12,15 @@ const unsigned int IN2_A = 4;
 const unsigned int IN1_B = 5;
 const unsigned int IN2_B = 6;
 const unsigned int EN_B = 10;
-const int waterLevelPin = 2;
 const int rx = 12; //esp2866 module
 const int tx = 11; //esp2866 module
 const int relayPin = A1;
 const int TdsSensorPin = A5;
 const int photoresistorPin = A2;
-const int LED_PIN = 13;
+const int LED_PIN = 2;
 const int echoPin = 7;
 const int trigPin = 9;
-const int echoPinB = 2;
+const int echoPinB = 13;
 /////////////////////Threshholds//////////////////
 #define missionDistanceThreshold 0.1
 #define VREF 5.0      // analog reference voltage(Volt) of the ADC
@@ -53,16 +52,16 @@ void setup()
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(echoPin, INPUT);  // Sets the echoPin as an INPUT
   pinMode(relayPin, OUTPUT);
-  pinMode(waterLevelPin, INPUT);
+  //pinMode(waterLevelPin, INPUT);
   pinMode(photoresistorPin, INPUT);
   pinMode(TdsSensorPin, INPUT);
   Enes100.begin("Team 2 Cool", WATER, marker, rx, tx);
   Serial.begin(115200);
-  Enes100.println("Begining Mission");
-  Serial.println("Begining Mission");
+  Enes100.println("Beginning Mission");
+  Serial.println("Beginning Mission");
   updateCoords();
   completeMission();
-  //  runMission();
+//  xrunMission();
   postMission();
   Serial.println(getSalinity());
   Serial.println(" Mission complete");

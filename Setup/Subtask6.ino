@@ -119,7 +119,7 @@ void moveToMission(double tx, double ty) {
     setAngle(angle);
     //    p(" dis:") //fixed target;
     //    p(dis);
-    speed *= dis * .5;// @ dis = 0.2, dis * 0.5 = 1. This way it linearly slows to a certian point.
+    speed *= dis * .5;// @ dis = 0.2, dis * 0.5 = 1. This way it linearly slows to a certain point.
     speed = 200;
     //    ps(" s: ");
     //    p(speed);

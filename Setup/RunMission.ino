@@ -39,6 +39,7 @@ void completeMission() {
 
 void runMission() {
   int waterLevel  = getWaterHeight();
+  Serial.println(waterLevel);
   analogWrite(relayPin, 255);
   delay(relayTimeOn);
   analogWrite(relayPin, 0);
@@ -55,6 +56,6 @@ void runMission() {
   Enes100.mission(WATER_TYPE, SALT_UNPOLLUTED);
 //  Serial.println(typeOfWater);
 
-       Enes100.mission(DEPTH, waterLevel);
+       Enes100.mission(1, waterLevel);
        
 }
