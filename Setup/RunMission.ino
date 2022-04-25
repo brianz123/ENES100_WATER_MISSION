@@ -12,28 +12,26 @@ void completeMission() {
   if (y > 1) {
     directionTheta = -1 * pi / 2;
     setAngle(directionTheta);
-    missionY = .55;
     Enes100.println("more than 1");
-    setAngle(directionTheta);
-    moveTo(.55, .7);
-    //    setAngle(directionTheta);
-    //    moveTo(.55, .75);
-    setAngle(directionTheta);
+    setAngleMission(directionTheta);
+    moveToMission(.55, .9);
+    setAngleMission(directionTheta);
   } else {
     Enes100.println("less than 1");
-    setAngle(directionTheta);
+    setAngleMission(directionTheta);
     //    moveTo(.55, 1);
-    setAngle(directionTheta);
-    moveTo(.55, 1.15);
-    setAngle(directionTheta);
+    setAngleMission(directionTheta);
+    moveToMission(.55, 1.1);
+    setAngleMission(directionTheta);
     //    moveToMission(.55, 1.15);
     //    setAngle(directionTheta);
   }
   Enes100.println("At Mission sight");
-  runMission();//completes sampling proccess
+//  runMission();//completes sampling proccess
   updateCoords();
+  delay(2000);
   setMotors(-255, -255);
-  delay(250);
+  delay(500);
   setAngle(0);
 }
 
@@ -43,19 +41,32 @@ void runMission() {
   analogWrite(relayPin, 255);
   delay(relayTimeOn);
   analogWrite(relayPin, 0);
+  int k = 0; 
   bool isSalty = getSalinity();
   bool isPolluted = hasPollution(); //TODO add fucntion
   //TODO determine Pollution
-  if (isSalty && isPolluted)
+  if (isSalty && isPolluted){
     Enes100.mission(WATER_TYPE, SALT_UNPOLLUTED);
-  else if (!isSalty && isPolluted)
+    k =0;
+  }
+  else if (!isSalty && isPolluted){
   Enes100.mission(WATER_TYPE, FRESH_POLLUTED);
-  else if (!isSalty && !isPolluted)
+  k =1;
+  }
+  else if (!isSalty && !isPolluted){
   Enes100.mission(WATER_TYPE, FRESH_UNPOLLUTED);
-  else if (isSalty && !isPolluted)
+  k =2;
+  }
+  else if (isSalty && !isPolluted){
   Enes100.mission(WATER_TYPE, SALT_UNPOLLUTED);
+  k=3;
+  }
 //  Serial.println(typeOfWater);
 
        Enes100.mission(1, waterLevel);
+       Serial.print("Water Height: ");
+        Serial.println(waterLevel);
+        Serial.print("Water Type: ");
+        Serial.println(k);
        
 }

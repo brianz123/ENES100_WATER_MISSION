@@ -22,12 +22,12 @@ const int echoPin = 7;
 const int trigPin = 9;
 const int echoPinB = 13;
 /////////////////////Threshholds//////////////////
-#define missionDistanceThreshold 0.1
+#define missionDistanceThreshold 0.15
 #define VREF 5.0      // analog reference voltage(Volt) of the ADC
 #define SCOUNT  30           // sum of sample point
 
 ///////////////constants////////////////////////////
-#define ultrasonicThreshold 10          // threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
+#define ultrasonicThreshold 15          // threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
 #define SalinityThreshold 300
 #define photoresistorThreshhold 50 // update
 #define relayTimeOn 30000          // milliseconds
@@ -59,10 +59,10 @@ void setup()
   Serial.begin(115200);
   Enes100.println("Beginning Mission");
   Serial.println("Beginning Mission");
-  updateCoords();
-  completeMission();
-//  xrunMission();
-  postMission();
+//  updateCoords();
+//  completeMission();
+  runMission();
+//  postMission();
   Serial.println(getSalinity());
   Serial.println(" Mission complete");
   Enes100.println(" Mission complete");
@@ -70,7 +70,7 @@ void setup()
 
 void loop()
 {
-  //  Serial.println(checkObstacle());
+    Serial.println(getWaterHeight() );
   //   if (!checkObstacle()) {
   //     motorsOff(0);
   //    } else {

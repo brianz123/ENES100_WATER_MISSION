@@ -3,7 +3,7 @@
 //To compile you better have helpers.h and Enes100.h. I also edited helpers.h so you need to update it.
 
 const float kP = 100.0;
-#define MAX_TURN_SPEED 255
+#define MAX_TURN_SPEED 245
 
 
 void setAngle(double target) {
@@ -28,7 +28,7 @@ void setAngle(double target) {
     //    Enes100.print(" Target: ");
     //    Enes100.println(target);
     setMotors(left, right);
-    delay(100);
+    delay(50);
     setMotors(0);
   }
   setMotors(0);
@@ -72,9 +72,38 @@ void moveTo(double tx, double ty) {
     setAngle(angle);
     speed = 255;
     setMotors(speed);
-    delay(200);
-    setMotors(0, 0);
+    delay(150);
+    setMotors(0);
   }
+
+}
+
+void setAngleMission(double target) {
+  ps("Targeting angle: ");
+  pl(target);
+  Enes100.updateLocation();
+  const double thresh = .09;
+  double *curr = &Enes100.location.theta;
+  int left = 0, right = 0;
+  if (target - theta > 0) { // need to turn left
+    left = MAX_TURN_SPEED;
+    right = -1 * MAX_TURN_SPEED;
+  } else if (target - theta < 0) { // need to turn right
+    left = -1 * MAX_TURN_SPEED;
+    right = MAX_TURN_SPEED;
+  }
+  updateCoords();
+  while (abs(target - theta) > thresh) {
+    updateCoords();
+    //    Enes100.print("Theta: ");
+    //    Enes100.print(theta);
+    //    Enes100.print(" Target: ");
+    //    Enes100.println(target);
+    setMotors(left, right);
+    delay(50);
+    setMotors(0);
+  }
+  setMotors(0);
 }
 
 void moveToMission(double tx, double ty) {
@@ -85,7 +114,7 @@ void moveToMission(double tx, double ty) {
   double dis = 100;
   double speed = 0;
 
-  while (dis > 0.1) { //Within 10 CM
+  while (dis > 0.05) { //Within 10 CM
     updateCoords();
     dis = abs(ty - y);
     //    dis = sqrt((tx - x) * (tx - x) + (ty - y) * (ty - y));
@@ -116,15 +145,12 @@ void moveToMission(double tx, double ty) {
     while (angle < -1 * PI) {
       angle += PI;
     }
-    setAngle(angle);
-    //    p(" dis:") //fixed target;
-    //    p(dis);
-    speed *= dis * .5;// @ dis = 0.2, dis * 0.5 = 1. This way it linearly slows to a certain point.
+    setAngleMission(angle);
     speed = 200;
     //    ps(" s: ");
     //    p(speed);
     setMotors(speed);
-    delay(55);
+    delay(62);
     setMotors(0, 0);
   }
 }
@@ -161,8 +187,8 @@ int getMedianNum(int bArray[], int iFilterLen)
 }
 
 /***
- *return true if salty 
- */
+  return true if salty
+*/
 bool getSalinity() {
   static unsigned long analogSampleTimepoint = millis();
   analogSampleTimepoint = millis();
@@ -187,9 +213,9 @@ bool getSalinity() {
 }
 
 /***
- * return the depth of the water in the pool
- */
-int getWaterHeight(){
+   return the depth of the water in the pool
+*/
+int getWaterHeight() {
   //TODO read water level
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -197,7 +223,7 @@ int getWaterHeight(){
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  
+
   // reads digital echo and returns sound wave travel time
   duration =  pulseIn(echoPinB, HIGH);
   distance = duration * 0.0343 / 2;
@@ -216,15 +242,16 @@ int getWaterHeight(){
     return 40;
   }
 }
-bool hasPollution(){
+bool hasPollution() {
   // read the value from the sensor
-  sensorValue = analogRead(photoResitor);
+  int sensorValue = 0;
+  sensorValue = analogRead(photoresistorPin);
   // print the sensor reading so you know its range
   Serial.println(sensorValue);
   // check the pollution
   if (sensorValue > 120) {
     return false;
-  }else{
+  } else {
     return true;
   }
 }
