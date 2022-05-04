@@ -62,6 +62,7 @@ void setup()
   Enes100.println("Beginning Mission");
   Serial.println("Beginning Mission");
   updateCoords();
+   Enes100.println("Starting Mission");
   completeMission();
 //  runMission();
   postMission();
@@ -74,9 +75,9 @@ void loop()
 {
 //  int s = getSalinity();
 //  Serial.println(analogRead(photo2));
-//  Serial.println(getHeight());
-runMission();
-Enes100.println(analogRead(photo2));
+  Serial.println(getHeight());
+//runMission();
+//Enes100.println(analogRead(photo2));
 //followline();
 delay(1000);
   //   if (!checkObstacle()) {

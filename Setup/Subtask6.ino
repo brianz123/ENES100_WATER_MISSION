@@ -98,12 +98,12 @@ void setAngleMission(double target) {
   while (abs(target - theta) > thresh) {
 
     updateCoords();
-    //    Enes100.print("Theta: ");
-    //    Enes100.print(theta);
-    //    Enes100.print(" Target: ");
-    //    Enes100.println(target);
+    Enes100.print("Theta: ");
+    Enes100.print(theta);
+    Enes100.print(" Target: ");
+    Enes100.println(target);
     setMotors(left, right);
-    delay(55);
+    delay(60);
     setMotors(0);
   }
   setMotors(0);
@@ -166,8 +166,8 @@ void moveToMission(double tx, double ty) {
 }
 
 /***
- * waits until the otv actually moves
- */
+   waits until the otv actually moves
+*/
 void waitMove() {
   double dis, initX = x, initY = y;
   do {
@@ -178,8 +178,8 @@ void waitMove() {
 
 }
 /***
- * waits until the otv actually moves
- */
+   waits until the otv actually moves
+*/
 void waitTurn() {
   double dis, initTheta;
   do {
@@ -258,8 +258,8 @@ int getWaterHeight() {
   duration =  pulseIn(echoPinB, HIGH);
   distance = duration * 0.0343 / 2;
   // 20 mm is 10-2, 30 is 9-2, 40 is 8-2
-Serial.print("dist: ");
-Serial.println(distance);
+  Serial.print("dist: ");
+  Serial.println(distance);
   if (distance < 5.5) {
     //      Serial.println("Water height is 20 mm");
     return 20;
@@ -268,21 +268,21 @@ Serial.println(distance);
     //      Serial.println("Water height is 30 mm");
     return 30;
   }
-  else if (distance >=6.5) {
+  else if (distance >= 6.5) {
     //      Serial.println("Water height is 40 mm");
     return 40;
   }
 }
 /***
- * returns true if the water has pollution (is green)
- */
+   returns true if the water has pollution (is green)
+*/
 bool hasPollution() {
   // read the value from the sensor
   int sensorValue = 0;
-   for (int i=0; i < 100; i++) {
- sensorValue += analogRead(photoresistorPin);
- }
- sensorValue = sensorValue/100;
+  for (int i = 0; i < 100; i++) {
+    sensorValue += analogRead(photoresistorPin);
+  }
+  sensorValue = sensorValue / 100;
   sensorValue = analogRead(photoresistorPin);
   // print the sensor reading so you know its range
   Serial.print("Color ");
@@ -296,8 +296,8 @@ bool hasPollution() {
 
 
 /***
- * follows the blue line between the mission and landing zone
-// */
+   follows the blue line between the mission and landing zone
+  // */
 //void followline() {
 //  while(getHeight() > 8) { //Within 10 CM
 //    Enes100.println(analogRead(photo2));
