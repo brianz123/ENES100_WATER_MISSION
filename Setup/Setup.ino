@@ -31,7 +31,7 @@ const int photo2 = A4;
 #define ultrasonicThreshold 15          // threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
 #define SalinityThreshold 500
 #define photoresistorThreshhold 50 // update
-#define relayTimeOn 30000          // milliseconds
+#define relayTimeOn 55000          // milliseconds
 
 ////////////global Variables////////////////////
 long duration; // variable for the duration of sound wave travel

@@ -262,7 +262,7 @@ int getWaterHeight() {
   Serial.println(distance);
   if (distance < 5.5) {
     //      Serial.println("Water height is 20 mm");
-    return 20;
+    return 40;
   }
   else if (distance < 6.5) {
     //      Serial.println("Water height is 30 mm");
@@ -270,7 +270,7 @@ int getWaterHeight() {
   }
   else if (distance >= 6.5) {
     //      Serial.println("Water height is 40 mm");
-    return 40;
+    return 20;
   }
 }
 /***

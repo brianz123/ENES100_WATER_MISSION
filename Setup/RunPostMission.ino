@@ -3,7 +3,7 @@
  */
 void postMission() {
 const double one = 1;
-const double two = 2;
+const double two = 1.9;
 const double three = 3;
   moveTo(one, 1);
   Enes100.println("going to 1,1");

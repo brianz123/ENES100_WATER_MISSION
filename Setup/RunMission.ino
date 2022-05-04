@@ -60,7 +60,7 @@ void runMission() {
   int waterLevel  = getWaterHeight();
   Serial.println(waterLevel);
   analogWrite(relayPin, 255);
-//    delay(relayTimeOn);
+    delay(relayTimeOn);
   analogWrite(relayPin, 0);
   int k = 0;
   bool isSalty = getSalinity();
