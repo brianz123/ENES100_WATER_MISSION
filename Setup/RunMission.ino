@@ -43,12 +43,12 @@ void completeMission() {
   delay(500);
   setMotors(0);
   setMotors(-150, -150);
-  delay(300);
+  delay(400);
   setMotors(0);
   Enes100.println("At Mission site");
   runMission();//completes sampling proccess
   updateCoords();
-  delay(2000);
+  delay(1000);
   setMotors(-255, -255);
   delay(500);
   setAngle(0);
@@ -60,7 +60,7 @@ void runMission() {
   int waterLevel  = getWaterHeight();
   Serial.println(waterLevel);
   analogWrite(relayPin, 255);
-    delay(relayTimeOn);
+    delay (relayTimeOn);
   analogWrite(relayPin, 0);
   int k = 0;
   bool isSalty = getSalinity();

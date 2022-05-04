@@ -23,13 +23,13 @@ const int trigPin = 9;
 const int echoPinB = 13;
 const int photo2 = A4;
 /////////////////////Threshholds//////////////////
-#define missionDistanceThreshold 0.15
+#define missionDistanceThreshold 0.20
 #define VREF 5.0      // analog reference voltage(Volt) of the ADC
 #define SCOUNT  30           // sum of sample point
 
 ///////////////constants////////////////////////////
 #define ultrasonicThreshold 15          // threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
-#define SalinityThreshold 500
+#define SalinityThreshold 400
 #define photoresistorThreshhold 50 // update
 #define relayTimeOn 55000          // milliseconds
 

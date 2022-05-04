@@ -34,7 +34,7 @@ void setAngle(double target) {
   setMotors(0);
 }
 
-void moveTo(double tx, double ty) {
+bool moveTo(double tx, double ty) {
   ps("Going to x:");
   p(tx);
   ps(" y:");
@@ -72,10 +72,15 @@ void moveTo(double tx, double ty) {
     setAngle(angle);
     speed = 255;
     setMotors(speed);
-    waitMove();
+    if (!waitMove()){
+     setMotors(-255);
+     delay(750);
+     setMotors(0);
+      return false; 
+    }
     setMotors(0);
   }
-
+return true;
 }
 
 void setAngleMission(double target) {
@@ -168,14 +173,17 @@ void moveToMission(double tx, double ty) {
 /***
    waits until the otv actually moves
 */
-void waitMove() {
+bool waitMove() {
   double dis, initX = x, initY = y;
+  double init = millis();
   do {
     updateCoords();
     dis = sqrt(pow((initX - x), 2) + pow((initY - y), 2));
     delay(10);
-  } while (dis < .01);
-
+    if (millis() - init > 6000)
+      return false;
+  } while (dis < .03);
+  return true;
 }
 /***
    waits until the otv actually moves
