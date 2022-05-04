@@ -1,7 +1,7 @@
 #include "Enes100.h"
 #define ENES100_HELPERS
 #include "helpers.h"
-#define marker 209
+#define marker 214
 #define pi 3.14159265359
 // Pin assignment////////////////////////
 // Left Motors (A)
@@ -21,6 +21,7 @@ const int LED_PIN = 2;
 const int echoPin = 7;
 const int trigPin = 9;
 const int echoPinB = 13;
+const int photo2 = A4;
 /////////////////////Threshholds//////////////////
 #define missionDistanceThreshold 0.15
 #define VREF 5.0      // analog reference voltage(Volt) of the ADC
@@ -28,7 +29,7 @@ const int echoPinB = 13;
 
 ///////////////constants////////////////////////////
 #define ultrasonicThreshold 15          // threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
-#define SalinityThreshold 300
+#define SalinityThreshold 500
 #define photoresistorThreshhold 50 // update
 #define relayTimeOn 30000          // milliseconds
 
@@ -54,15 +55,16 @@ void setup()
   pinMode(relayPin, OUTPUT);
   //pinMode(waterLevelPin, INPUT);
   pinMode(photoresistorPin, INPUT);
+  pinMode(photo2, INPUT);
   pinMode(TdsSensorPin, INPUT);
   Enes100.begin("Team 2 Cool", WATER, marker, rx, tx);
   Serial.begin(115200);
   Enes100.println("Beginning Mission");
   Serial.println("Beginning Mission");
-//  updateCoords();
-//  completeMission();
-  runMission();
-//  postMission();
+  updateCoords();
+  completeMission();
+//  runMission();
+  postMission();
   Serial.println(getSalinity());
   Serial.println(" Mission complete");
   Enes100.println(" Mission complete");
@@ -70,7 +72,13 @@ void setup()
 
 void loop()
 {
-    Serial.println(getWaterHeight() );
+//  int s = getSalinity();
+//  Serial.println(analogRead(photo2));
+//  Serial.println(getHeight());
+runMission();
+Enes100.println(analogRead(photo2));
+//followline();
+delay(1000);
   //   if (!checkObstacle()) {
   //     motorsOff(0);
   //    } else {
