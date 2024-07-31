@@ -1,7 +1,7 @@
 #include "Enes100.h"
 #define ENES100_HELPERS
 #include "helpers.h"
-#define marker 209
+#define marker 214
 #define pi 3.14159265359
 // Pin assignment////////////////////////
 // Left Motors (A)
@@ -12,26 +12,26 @@ const unsigned int IN2_A = 4;
 const unsigned int IN1_B = 5;
 const unsigned int IN2_B = 6;
 const unsigned int EN_B = 10;
-const int waterLevelPin = 2;
 const int rx = 12; //esp2866 module
 const int tx = 11; //esp2866 module
 const int relayPin = A1;
 const int TdsSensorPin = A5;
 const int photoresistorPin = A2;
-const int LED_PIN = 13;
+const int LED_PIN = 2;
 const int echoPin = 7;
 const int trigPin = 9;
-const int echoPinB = 2;
+const int echoPinB = 13;
+const int photo2 = A4;
 /////////////////////Threshholds//////////////////
-#define missionDistanceThreshold 0.1
+#define missionDistanceThreshold 0.20
 #define VREF 5.0      // analog reference voltage(Volt) of the ADC
 #define SCOUNT  30           // sum of sample point
 
 ///////////////constants////////////////////////////
-#define ultrasonicThreshold 10          // threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
-#define SalinityThreshold 300
+#define ultrasonicThreshold 15          // threshold for ultrasonic sensor. This is the minumum distance we want the OTV from any obstacle
+#define SalinityThreshold 400
 #define photoresistorThreshhold 50 // update
-#define relayTimeOn 30000          // milliseconds
+#define relayTimeOn 55000          // milliseconds
 
 ////////////global Variables////////////////////
 long duration; // variable for the duration of sound wave travel
@@ -53,17 +53,19 @@ void setup()
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(echoPin, INPUT);  // Sets the echoPin as an INPUT
   pinMode(relayPin, OUTPUT);
-  pinMode(waterLevelPin, INPUT);
+  //pinMode(waterLevelPin, INPUT);
   pinMode(photoresistorPin, INPUT);
+  pinMode(photo2, INPUT);
   pinMode(TdsSensorPin, INPUT);
   Enes100.begin("Team 2 Cool", WATER, marker, rx, tx);
   Serial.begin(115200);
-  Enes100.println("Begining Mission");
-  Serial.println("Begining Mission");
+  Enes100.println("Beginning Mission");
+  Serial.println("Beginning Mission");
   updateCoords();
-  //  completeMission();
-  runMission();
-  //    postMission();
+   Enes100.println("Starting Mission");
+  completeMission();
+//  runMission();
+  postMission();
   Serial.println(getSalinity());
   Serial.println(" Mission complete");
   Enes100.println(" Mission complete");
@@ -71,7 +73,13 @@ void setup()
 
 void loop()
 {
-  //  Serial.println(checkObstacle());
+//  int s = getSalinity();
+//  Serial.println(analogRead(photo2));
+  Serial.println(getHeight());
+//runMission();
+//Enes100.println(analogRead(photo2));
+//followline();
+delay(1000);
   //   if (!checkObstacle()) {
   //     motorsOff(0);
   //    } else {
@@ -85,8 +93,8 @@ void loop()
 }
 
 /***
- * tries to update coordnates until it does successfully
- */
+   tries to update coordnates until it does successfully
+*/
 void updateCoords()
 {
   if (Enes100.updateLocation())
@@ -107,8 +115,8 @@ void updateCoords()
   }
 }
 /***
- * Confirms that OTV is returning reasonable numbers and not garbage values
- */
+   Confirms that OTV is returning reasonable numbers and not garbage values
+*/
 bool sanityCheck() {
   return Enes100.location.theta < PI * 1.1 &&
          Enes100.location.theta > -PI * 1.1 &&

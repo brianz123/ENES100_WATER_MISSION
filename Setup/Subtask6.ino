@@ -13,28 +13,28 @@ void setAngle(double target) {
   const double thresh = .15;
   double *curr = &Enes100.location.theta;
   int left = 0, right = 0;
-  if (target - theta > 0) { // need to turn left
-    left = MAX_TURN_SPEED;
-    right = -1 * MAX_TURN_SPEED;
-  } else if (target - theta < 0) { // need to turn right
-    left = -1 * MAX_TURN_SPEED;
-    right = MAX_TURN_SPEED;
-  }
+
   updateCoords();
   while (abs(target - theta) > thresh) {
     updateCoords();
+    if (target - theta > 0) { // need to turn left
+      left = MAX_TURN_SPEED;
+      right = -1 * MAX_TURN_SPEED;
+    } else if (target - theta < 0) { // need to turn right
+      left = -1 * MAX_TURN_SPEED;
+      right = MAX_TURN_SPEED;
+    }
     //    Enes100.print("Theta: ");
     //    Enes100.print(theta);
     //    Enes100.print(" Target: ");
     //    Enes100.println(target);
     setMotors(left, right);
-    delay(100);
-    setMotors(0);
+    waitTurn();
   }
   setMotors(0);
 }
 
-void moveTo(double tx, double ty) {
+bool moveTo(double tx, double ty) {
   ps("Going to x:");
   p(tx);
   ps(" y:");
@@ -72,9 +72,46 @@ void moveTo(double tx, double ty) {
     setAngle(angle);
     speed = 255;
     setMotors(speed);
-    delay(200);
-    setMotors(0, 0);
+    if (!waitMove()){
+     setMotors(-255);
+     delay(750);
+     setMotors(0);
+      return false; 
+    }
+    setMotors(0);
   }
+return true;
+}
+
+void setAngleMission(double target) {
+  ps("Targeting angle: ");
+  pl(target);
+  updateCoords();
+  Enes100.updateLocation();
+  const double thresh = .04;
+  double *curr = &Enes100.location.theta;
+  int left = 0, right = 0;
+  int speed = 225;
+  updateCoords();
+  if (target - theta > 0) { // need to turn left
+    left = speed;
+    right = -1 * speed;
+  } else if (target - theta < 0) { // need to turn right
+    left = -1 * speed;
+    right = speed;
+  }
+  while (abs(target - theta) > thresh) {
+
+    updateCoords();
+    Enes100.print("Theta: ");
+    Enes100.print(theta);
+    Enes100.print(" Target: ");
+    Enes100.println(target);
+    setMotors(left, right);
+    delay(60);
+    setMotors(0);
+  }
+  setMotors(0);
 }
 
 void moveToMission(double tx, double ty) {
@@ -84,8 +121,14 @@ void moveToMission(double tx, double ty) {
   pl(ty);
   double dis = 100;
   double speed = 0;
-
-  while (dis > 0.1) { //Within 10 CM
+  setMotors(150);
+  delay(250);
+  setMotors(0);
+  updateCoords();
+  //  setAngleMission(atan2(ty - y, tx - x));
+  //  setAngleMission(atan2(ty - y, tx - x));
+  //  setAngleMission(atan2(ty - y, tx - x));
+  while (dis > 0.05) { //Within 10 CM
     updateCoords();
     dis = abs(ty - y);
     //    dis = sqrt((tx - x) * (tx - x) + (ty - y) * (ty - y));
@@ -116,22 +159,42 @@ void moveToMission(double tx, double ty) {
     while (angle < -1 * PI) {
       angle += PI;
     }
-    setAngle(angle);
-    //    p(" dis:") //fixed target;
-    //    p(dis);
-    speed *= dis * .5;// @ dis = 0.2, dis * 0.5 = 1. This way it linearly slows to a certian point.
+    //    setAngleMission(atan2(ty - y, tx - x));
     speed = 200;
     //    ps(" s: ");
     //    p(speed);
     setMotors(speed);
-    delay(55);
-    setMotors(0, 0);
+    waitMove();
+    setMotors(0);
   }
+
 }
 
-
-float toDeg(float rad) {
-  return 180.0f * rad / PI;
+/***
+   waits until the otv actually moves
+*/
+bool waitMove() {
+  double dis, initX = x, initY = y;
+  double init = millis();
+  do {
+    updateCoords();
+    dis = sqrt(pow((initX - x), 2) + pow((initY - y), 2));
+    delay(10);
+    if (millis() - init > 6000)
+      return false;
+  } while (dis < .03);
+  return true;
+}
+/***
+   waits until the otv actually moves
+*/
+void waitTurn() {
+  double dis, initTheta;
+  do {
+    updateCoords();
+    dis = abs(initTheta - theta);
+    delay(10);
+  } while (dis < .1);
 }
 
 //For TDS sensor
@@ -161,8 +224,8 @@ int getMedianNum(int bArray[], int iFilterLen)
 }
 
 /***
- *return true if salty 
- */
+  return true if salty
+*/
 bool getSalinity() {
   static unsigned long analogSampleTimepoint = millis();
   analogSampleTimepoint = millis();
@@ -180,6 +243,7 @@ bool getSalinity() {
   float compensationVolatge = averageVoltage / compensationCoefficient; //temperature compensation
   tdsValue = (133.42 * compensationVolatge * compensationVolatge * compensationVolatge - 255.86 * compensationVolatge * compensationVolatge + 857.39 * compensationVolatge) * 0.5; //convert voltage value to tds value
   //   }
+  Serial.println(tdsValue);
   if (tdsValue < SalinityThreshold)
     return false;
   else
@@ -187,9 +251,9 @@ bool getSalinity() {
 }
 
 /***
- * return the depth of the water in the pool
- */
-int getWaterHeight(){
+   return the depth of the water in the pool
+*/
+int getWaterHeight() {
   //TODO read water level
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -197,22 +261,70 @@ int getWaterHeight(){
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  
+
   // reads digital echo and returns sound wave travel time
   duration =  pulseIn(echoPinB, HIGH);
   distance = duration * 0.0343 / 2;
   // 20 mm is 10-2, 30 is 9-2, 40 is 8-2
-
-  if (distance == 7) {
+  Serial.print("dist: ");
+  Serial.println(distance);
+  if (distance < 5.5) {
     //      Serial.println("Water height is 20 mm");
-    return 20;
+    return 40;
   }
-  else if (distance == 6) {
+  else if (distance < 6.5) {
     //      Serial.println("Water height is 30 mm");
     return 30;
   }
-  else if (distance == 5) {
+  else if (distance >= 6.5) {
     //      Serial.println("Water height is 40 mm");
-    return 40;
+    return 20;
   }
 }
+/***
+   returns true if the water has pollution (is green)
+*/
+bool hasPollution() {
+  // read the value from the sensor
+  int sensorValue = 0;
+  for (int i = 0; i < 100; i++) {
+    sensorValue += analogRead(photoresistorPin);
+  }
+  sensorValue = sensorValue / 100;
+  sensorValue = analogRead(photoresistorPin);
+  // print the sensor reading so you know its range
+  Serial.print("Color ");
+  Serial.println(sensorValue);
+  // check the pollution
+  if (sensorValue < 290) {
+    return true;
+  }
+  return false;
+}
+
+
+/***
+   follows the blue line between the mission and landing zone
+  // */
+//void followline() {
+//  while(getHeight() > 8) { //Within 10 CM
+//    Enes100.println(analogRead(photo2));
+//    //    updateCoords();
+////    dis = abs(ty- y);
+//    while (analogRead(photo2) >= 285) {
+//        Enes100.println(analogRead(photo2));
+//      setMotors(200, -250);
+//      delay(50);
+//      setMotors(0);
+//    }
+//    while (analogRead(photo2) < 285) {
+//        Enes100.println(analogRead(photo2));
+//      setMotors(-250, 200);
+//      delay(50);
+//      setMotors(0);
+//    }
+//  }
+//  setMotors(200, -250);
+//  delay(500);
+//  setMotors(0);
+//}
